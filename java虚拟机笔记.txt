@@ -224,8 +224,195 @@
 		16、数组是真正的对象。具有相同类型和维度的数组是同一个类型。[ - 表示维度。如  int[][]可表示为[[I。
 		17、程序计数器：每个线程都有自己的PC寄存器。他是在线程启动时创建的，大小为一个字长，pc寄存器总是指向下一条指令的地址(可以是本地指针、相对方法起始指令的偏移量)。
 			如果线程在指向本地方法，pc寄存器值是undefined。
+			
 
 
 		
 
 	
+	
+	
+																第六章 Java Class文件
+1、java class文件是对java程序二进制文件格式的精确定义。它是8位的，并且按高位在前排列。		
+2、java class文件由大小不同的项组成，每项分为：类型，名称，数量。
+
+3、			类型                名称                数量
+			u4					magic				  1
+			u2					minor_version		  1
+			u2					major_version	      1
+			u2					constant_pool_count   1
+			cp_info				constant_pool		  constant_pool_count - 1
+			u2					access_flags		  1
+			u2					this.class			  1
+			u2					super.class			  1
+			u2 					interfaces_count	  1
+			u2					interfaces			  interfaces_count
+			u2					fields_count		  1
+			field_info			fields				  fields_count
+			u2					methods_count		  1
+			method_info         methods				  methods_count
+			u2					attributes_count	  1
+			attribute_info		attributes			   attributes_count
+4、magic(魔数) OXCAFEBABE,只是一个标记，用于方便区分非java class文件
+5、minor_version(次版本号)  major_version(主版本号).用于确定class文件的格式，超出java虚拟机处理范围的版本将不会被处理。
+   class文件的主版本号与java平台的主发布版本号保持一致，次版本号与特定平台发布版本各个发布版相关。
+6、常量池包含了与文件中类和接口相关的常量，存储了诸如文字字符串，final变量值，类名和方法名常量。java虚拟机常把常量池组织为入口列表的形式。
+   常量池前面是u2类型的constant_pool_count，常量池索引从1开始，0也会被constant_pool_count计数，例如如果常量池1-14，constant_pool_count = 15.
+7、每个常量池入口都是从一个长度为一个字节的标志开始。
+   入口类型		     	标志值				描述
+   CONSTANT_Utf8 		   1				UTF-8编码的Unicode字符串
+   CONSTANT_Integer		   3				int类型的字面值
+   CONSTANT_Float		   4				float类型的字面值
+   CONSTANT_Long		   5				long类型的字面值
+   CONSTANT_Double		   6				double类型的字面值
+   CONSTANT_Class		   7				对一个类或接口的符号引用
+   CONSTANT_String		   8				String类型的字面值
+   CONSTANT_Fieldref	   9				对一个字段的符号引用
+   CONSTANT_Methodref	   10				对一个类中声明的方法的符号引用
+   CONSTANT_InterfaceMethodref   11			对一个接口中声明的方法的符号引用
+   CONSTANT_NameAndType	   12				对一个字段或方法的部分的符号引用
+   
+ 8、access_flags
+	标志名				值				设置后的含义					设置者
+	ACC_PUBLIC			Ox0001			public类型						类和接口
+	ACC_FINAL			0x0010			类为final类型					只有类
+	ACC_SUPER			0x0020			使用新型的invokespecial语义		类和接口
+	ACC_INTERFACE		0X200			接口类型						接口
+	ACC_ABSTRACT		0x400			abstract类型					所有接口，部分类
+	
+9、this_class，是一个对自身CONSTANTS_Class的索引。super_class是对父类Cibstabts_Class的索引，Object的this_class = 0
+10、interfaces_count：直接父接口数量，interfaces：直接父接口数组，存储的是常量池CONSTANTS_Class_Info的索引。
+11、fields_count和fields。是对该类和接口声明的字段的描述，不包含父类或父接口中定义的字段，虚拟机可能添加字段(例如内部类添加对外部类的引用)。
+	fields_count表明字段的数量，fields是field_info表信息(字段的名字，描述符和修饰符)
+12、methods_count和methods。对该类或接口中所声明的方法的描述。不包含从父类继承下来的方法。
+	methods_count表明方法数量，methods是methods_info表信息(方法名称，方法描述符，栈空间长度，异常表，字节码序列以及可选的行数和局部变量)
+13、attributes_count和attributes。描述了该文件中类或接口所定义的属性的基本信息。attributes_count表明属性数量，attributes是attribute_info表信息
+	java虚拟机定义了几种属性，用户也可以自定义属性，java虚拟机会忽视任何不能识别的属性。
+14、常量池中容纳的符号引用包括三种特殊的字符：全限定名，简单名称，描述符。
+	字段符号引用：全限定名、简单字段名、字段描述符(字段类型名)
+	方法符号引用：全限定名、简单方法名、方法描述符(返回类型，参数数量，参数类型，参数顺序)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+													第七章 类型的生命周期
+1、类型的装载 、连接、初始化、对象的创建、垃圾收集、对象的总结、类型的卸载。
+2、类型的装载必须严格按照顺序进行：
+	1类型的装载：把二进制的java类型读取到java虚拟机中
+	2类型的连接：将已读入的二进制数据合并到java虚拟机的运行时状态中去。(验证 - 准备 - 解析)
+	3类型的初始化：为该类型分配内存。
+3、	java虚拟机规范在类型的装载和连接给了一定的灵活性，但严格限制的类型初始化的时机，必须在类型首次被主动使用时初始化。
+	1 创建类型实例时(new、反射、克隆、反序列化)
+	2 调用类型的静态方法
+	3 使用类型的静态字段(编译时常量除外)
+	4 使用类型的反射
+	5 虚拟机启动时被标记为启动类的类(即含有main方法的类)
+	6 初始化某个类型的子类时。
+	这六种情况是主动使用，其它情况都是被动使用，都不会去初始化类型。
+4、装载：1 通过该类型的全限定名，产生一个代表该类型的二进制数据流。
+		 2 解析这个二进制数据流为方法区内部的数据结构。
+		 3 创建一个表示该类型的Class类型的实例。
+	如果类型在装载时出现异常，并不会立刻报告错误，而是在类型被主动使用时抛出异常LinkageError。
+	在类型被装载之前要确保其所有的父类和父接口都已经被装载。
+5、	验证。检查被装载类型的正确性都属于验证。可能发生在装载过程，也可能发生在解析过程中。java虚拟机规范严格规定了所有任何可能的验证错误。
+    装载验证：检查魔数，确保每一部分都在正确的位置，拥有正确的长度，确保除Object外都有超类。
+	解析验证：确保符号引用确实存在，确保有访问权限。
+	正式验证：检查final类不能拥有子类。
+			  检查final方法不能被覆盖。
+			  确保类型和超类型之间没有不兼容的方法声明。
+			  检查所有确保类型和超类型之间没有不兼容的方法声明。
+			  检查所有检查所有确保类型和超类型之间没有不兼容的方法声明。
+			  检查所有常量池入口相互之间一致。(比如CONSTANT_String_info入口的string_index项目必须是一个CONSTANT_Utf8_info入口索引)
+			  检查常量池中所有特殊字符串是否符合格式(类名，字段名，方法名，字段描述符，方法描述符)
+			  检查字节码的完整性(最复杂的任务)
+6、准备。为类变量分配内存，并设置默认值。在准备阶段实现也可能为一些数据结构分配内存，目的是提高运行程序的性能(如方法表)
+7、解析。在常量池中查找符号引用替换成直接引用。
+8、初始化。为类变量赋予正确的初始值。它是由程序通过初始化语句或者静态初始化块语句给出的。所有初始化语句和初始化块都被java编译期收集到
+		   一个特殊的方法<cinit>中，次方法只能被java虚拟机调用。初始化先从父类开始，初始化子类时必须确保父类已经被初始化。初始化必须确保线程安全。
+9、编译时常量：被final修饰的并且使用编译时可知的值初始化的类变量。编译时常量不会被编译成字段，它们被编译期特殊处理，嵌入字节码流中或者常量池中。
+10、主动使用和被动使用。 使用一个非常量的静态字段只有当类或者接口的确声明了这个字段时才算主动使用。 
+11、对象的生命周期。
+		1对象的创建
+			1 显示创建：new操作符，Class.newInstance(),Object.clone,ObjectInputStream.readObj()
+			2 隐式创建：main方法中的String[],Class对象，CONSTANT_String_info，字符串拼接。
+		2对象的初始化。所有的类型都有至少有一个<init>，<init>中的异常不能被捕获。
+			1 调用<init>方法初始化
+			2 复制赋值(clone)
+			3 反序列化赋值
+		3垃圾收集和对象的终结
+			1 java中程序只能创建对象不能销毁对象，对象的销毁由jvm的垃圾收集器完成。
+			2 每个类型中都定义有终结方法finalize(),在对象被销毁之前，finalize()方法会被调用，finalize()方法只能被调用偶从
+			  ，在运行finalize()时，对象可能被重新引用。finalize()可能被任意线程调用。
+11、类型的卸载
+		1 启动类装载器装载的类永远都不会卸载，只有用户自定义的类装载器装载的类才会被卸载。
+		2 当一个类型不再可触及时就会被卸载。可触及性：对Class有引用，在堆中存在一个可触及的对象其方法区数据指向Class对象。
+		
+		
+		
+		
+		
+		
+													第八章 连接模型
+1 java编译器会为每个类和接口编译成一个独立的class二进制文件，它们通过符号引用相互关联，在运行时相互连接。
+2 每个被装载的类型jvm都会在方法区为其维护一份常量池，叫做运行时常量池，类型中所以的符合引用都存储在常量池中。
+  解析过程是将符号引用转换为直接引用的过程，所以也叫常量池解析。
+3 可以通过两种方式来动态扩展类型：
+	1 使用Class.forName(String name);默认会连接和初始化
+	2 使用ClassLoader.loadClass(String name);连接和初始化由虚拟机决定
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+													第二十章 java同步
+1												
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+													
+															
+	
+	
+ 	
+			
