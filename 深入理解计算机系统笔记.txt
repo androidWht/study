@@ -17,3 +17,73 @@
 		指令集结构：描述的是每条机器代码指令的效果
 		位体系结构：描述的是处理器实际上是如何实现的
 			
+			
+			
+			
+			
+			
+			
+	 50 - 		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+												第六章 存储器的层次结构
+1，概述
+		在计算机模型中，cpu负责指令的执行，存储器系统负责数据和指令的存储，存储器系统被组织为一个大的字节数组，cpu能以常量的时间访问每一个字节。
+		在存储器系统内部，实际是由不同容量，成本，访问速度存储器组成的层次结构。寄存器 - 高速缓存存储器 - 主存储器 - 磁盘 - 网络。
+		高速的存储器是作为低速存储器的缓存，存储器访问在1一个周期内就能访问，高速缓存存储器需要1 - 30个周期，主存储器50 - 200 ，磁盘几千万个周期。
+		程序的局部性属性对程序的性能有着重大的影响。
+		RAM，DRAM，ROM,机器硬盘，固态硬盘
+	
+2  存储技术
+		随机访问存储器(Random-Access memory)。分为静态和动态存储器，SRAM和DRAM。
+		SRAM使用双稳态的存储器单元存储位，每个双稳态由六个晶体管组成，它只有两种状态，其它任何状态都是不稳定的，会恢复到稳定状态，他能抵抗电子干扰。
+		DRAM将位存储位对一个电容的充电，每个存储单元由一个电容和一个访问晶体管组成。DRAM对电子干扰非常敏感，并且不可恢复。DRAM必须周期性的刷新。
+				每位晶体管数			相对访问时间		持续性			敏感性			相对造价			应用
+		SRAM		6						1				  是			  否			   100		   高速缓存存储器 
+		DRAM 		1						10				  否			  是				1		   主存，帧缓冲区
+		
+3	传统的DRAM
+		每个位都划分到一个超单元中，存储由超单元组成，所有超单元被组织成一个二位的数组。(i，j)。
+		DRAM芯片通过引脚与存储控制器相连，引脚分为地址引脚和数据引脚，地址引脚传递访问地址，数据引脚传递访问数据。
+		存储控制器将逻辑地址，转换位(i,j)格式的访问地址，i - RAS(Row access strobe)行访问选通脉冲  j - CAS (column access strobe)列访问选通脉冲
+		访问过程：先发送行RAS，DRAM将相应行数据访问高速缓存区，再发送CAS，DRAM在高数缓存区取出相应数据。
+		将DRAM组织成二维阵列而不是线性数组，主要是为了减少引脚数量。
+		
+4  	存储器模块
+		DRAM芯片包装在存储器模块(memory module)中，它是插到主板的扩展槽上的，常见的包装包括168个引脚的双列直插存储器模块(Dual Inline Memory Module)
+		它以64位为块传送数据，和72个引脚的单列直插存储器模块(Single Inline Memory Module)以32为块传送数据。
+		
+5 	增强的DRAM
+		快页模式DRAM(Fast Page Mode DRAM,FPM DRAM),
+		扩展数据输出DRAM(Extended Data Out DRAM EDO DRAM)
+		同步DRAM(Synchronous DRAM,SDRAM)
+		双倍速率同步DRAM(Double Data-rate synchronous DRAM)
+		Rambus DRAM(RDRAM)
+		视频DRAM(Video DRAM,VDRAM)
+		
+		主流是使用Double Data-rate synchronous DRAM 例如 DDR3 DRAM
+		
+6	非易失性存储器
+		PROM(Programmable ROM，可编程ROM)，只能被编程一次。
+		可擦写可编程ROM(Erasable Programmable ROM,EPROM)
+		闪存(flash memory)
+		
+		存储在ROM中的程序通常被称为固件(firmware)
+		
+7 	访问主存
+		总线：共享电子电路。
+		总线事务：数据传递和处理通过一系列步骤完成，这些步骤就称为总线事务。
+		总线传递的信息可分为：地址，数据，控制信号。
+		计算机系统的主要模块：cpu芯片，I/O桥的芯片组，DRAM存储器模块。
+		系统总线：连接cpu与i/o桥。存储器总线：连接i/o桥与DRAM。i/o总线：连接i/o桥与i/o设备。
+		
+												
+			
