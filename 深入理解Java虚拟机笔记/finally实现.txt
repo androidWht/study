@@ -1,0 +1,5 @@
+1 Java虚拟机在每个try语句块和其相关的catch子句的结尾都会调用finally子句的子例程。
+2 finally子句结束后(这里的结束指的是finally子句正常执行完毕，不包括抛出异常，执行return，continue,break)
+  开始执行返回操作，在调用finally子句的后面继续执行。如果非正常结束，则截断了返回操作。
+  
+  
