@@ -1,0 +1,44 @@
+1 基本特点
+* HashMap是基于哈希表的Map接口的实现
+* 允许null键和null值，最多允许一条null键，允许多条null值
+* 不保证映射的顺序，特别是，它不能保证顺序会随着时间的推移保持恒定
+* HashMap根据key的hashCode存储数据，大多数情况下可以直接定位它的值，因而具有很快的访问速度O(1)
+
+2 存储结构
+* HashMap是数组+链表+红黑树实现的
+* 链表长度大于等于8时，转换为红黑树。
+* 数组查找速度o(1),链表查找速度o(n),红黑树查找速度o(logn)
+
+3 成员变量
+int size；//集合成员数量
+int modeCount; //内部数据结构变化次数，用于迭代的快速失败
+final loadFactor; //负载因子，用于扩容
+int threshold; //阈值 thredhold=cap * loadFactor 当size > thredhold时候执行扩容
+
+4 初始设置很性能
+* capacity过大会影响查找和迭代的性能，过小可能导致频繁的扩容。
+
+5 hash计算
+* (key == null)?0:(h=key.hashCode()) ^(h >>>16)。高16=1，低16位=(高16^低16)
+
+6 查找判断
+* hashCode相同 && (key相等 || equals相等)
+
+6 put过程
+* table=null || table.size()==0,执行resize()
+* 计算hashCode()，获取table的index
+* table[index]== null直接插入，否则执行查找，执行插入或者替换
+* ++size > threashold执行reszie()
+
+7 get过程
+* 计算hashCode和index
+* table[index]==null返回null，否则执行查找。
+
+8 resize过程
+* size > threshold会触发扩容，每次扩展为原理2倍
+* cap必须为2的幂次方最大值为1<<30
+* threshold=cap*loadFactor
+* 空参数构造函数，实例化的HashMap默认内部数组是null，即没有实例化。第一次调用put
+方法时，则会开始第一次初始化扩容，长度为16。
+* 有参构造函数，用于指定容量。会根据指定的数值找到不小于指定数字的2的幂数，将这个数设置给threshold。
+第一次调用put方法时，会设置cap=threshold，threshold=cap*loadFactor,如果不是第一次扩容，cap*2,thredshold*2
