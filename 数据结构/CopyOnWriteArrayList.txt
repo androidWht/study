@@ -1,0 +1,16 @@
+1 基本概述
+* List的线程安全版本实现
+* 使用写时复制，迭代线程安全。
+
+2 变量
+transient volatile Object[] array
+transient Object lock = new Object()
+
+3 添加操作
+*  使用lock同步，复制新数组，添加元素。
+
+4 删除操作
+* 使用lock同步，复制新数组，删除元素
+
+5 查找操作
+* 直接获取

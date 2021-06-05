@@ -1,0 +1,63 @@
+1 概述 
+* 用于实现异步消息处理和线程通信。
+
+2 组成
+* Handler 消息发送和处理
+* Looper 线程循环消息处理
+* Message 消息实体
+* MessageQueue 消息列队
+
+3 模型
+* 线程关联一个Looper(使用ThreadLocol机制)，循环获取MessageQueue的消息处理。
+* 使用Handler创建Message和发送消息，消息被连接到MessageQueue中。
+
+4 Handler解析
+* 成员变量
+  final Looper mLooper; //绑定的Looper
+  final MessageQueue；//绑定 的MessageQueue
+  final Callback callback; //消息处理回调
+  final boolean mAsynchronous; //是否发送的消息是异步消息
+  final IMessenger mMessenger; //用于进程间通信
+* 在创建Handler的时候要绑定Looper，从Looper中获取MessageQueue
+* 消息组装，通过Message.obtain(）方法获取Message对象
+* 消息发送，创建或设置Message对象，调用MessageQueue.enqueueMessage(Message,Long)
+* 消息处理，调用Handler.dispatchMessage(Message)方法处理消息 
+  首先使用Message.callback对象处理，如果没有使用Handler.callback处理，如果没有获取返回false调用handleMessage(Message)处理消息
+
+5 Looper解析
+* static void prepare() 创建Looper对象并存储在ThreadLocol中
+* static void loop() 执行循环处理
+* 消息处理是调用MessageQueue.next()获取Message，再调用Message.target.dispatchMessage(Message)处理消息
+
+6 Message解析
+* int what; // 用户可设置的标识
+  int arg1,int arg2,Object obj,Bundle data; // 用户可设置的数据
+  Handler target; //绑定的Handler对象
+  Runnable callback ;//消息处理对象
+  long when; // 消息处理时间
+  int flag; // 位存储，是否异步消息，是否正在使用
+  Message next；//下一个Message，实现链表
+* final static Message mPool; // 缓存池
+  final Object sPoolSync=new Object() //操作缓存池的锁
+  static int mPoolSize; //池大小
+
+7 MessageQueue解析
+* 消息列队，封装消息入列和出列逻辑。
+* 变量
+  final boolean mQuitAllowed; //是否运行退出
+  long mPtr; //native层的MessageQueue对象指针
+  Message mMessages ;//列首
+  final ArrayList<IdleHandler> mIdleHandler = new ArrayList<IdleHandler>; //闲置处理
+  boolean mQuitting；//是否正在退出
+  boolean mBlocked; //是否被native阻塞
+* 入列操作 enqueueMessage(Message msg,long when)
+  按序将Message插入列队合适的位置，并根据情况唤醒线程
+* 出列操作 Message next()
+   结合时间和同步屏障获取下一个Message，如果没有或者时间不到，处理IdleHandler，然后陷入阻塞。
+* 同步屏障
+   同步屏障本质是一个Message，它的target为空
+   同步屏障会阻塞它后面的Message处理，异步Message不受影响
+   int postSyncBarrier() ;  removeSyncBarrier(int token)
+   
+  
+
