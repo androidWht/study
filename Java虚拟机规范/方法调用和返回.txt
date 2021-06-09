@@ -1,0 +1,12 @@
+1 方调用指令
+* invokevirtual指定用于调用对象的实力方法，根据对象的实际类型进行分派。这是java语言中最常见的方法分派。
+* invokeinterface指令用户调用接口方法，它会在运行时搜索特定对象所实现的这个接口方法，并找出合适的方法进行调用。
+* invokespecial指令用户调用一些需要特殊处理的实例方法，包括实例初始化方法，私有方法和父类方法。
+* invokestatic指令用于调用类中的方法(static方法)
+* invokedynamic指令用于调用以绑定了invokedynamic指令的调用点对象作为目标的方法。
+  调用点对象是一个特殊的语法结构，当一条invokedynamic指令首次被java虚拟机执行前，java虚拟机将会执行一个引导方法
+  并以这个方法的运行结果作为调用点对象。因此每条invokesynamic指令都有独一无二的链接状态，这是它与其它方法调用指令的一个差异。
+
+2 方法返回指令
+* 方法返回指令根据返回值的类型进行区分，包括ireturn(返回boolean,byte,char,short,int)，lreturn，freturn,dreutrn和areturn。
+  还有return指令供声明为void的方法，实例初始化方法，类和接口的初始化方法使用。
