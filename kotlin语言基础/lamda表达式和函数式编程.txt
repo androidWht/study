@@ -1,0 +1,46 @@
+1 lambda表达式语法
+* 使用{}包裹，->把参数和函数体隔开。
+* val sum = {x:Int,y:Int -> x + y}
+* lambda表达式中的参数类型如果可以推导出来则可以省略类型，如果只有一个参数，参数可以省略使用it代替。
+
+2 成员应用
+* this::[成员],[C]::[成员]
+* 可以使用invoke或者()调用引用方法
+* 可以使用invoke获取属于引用值，或者get/set获取和修改值。
+* 成员引用实际上是通过编译器生成类来实现的
+   函数引用创建一个继承自FuntionReferenceImpl实现了相应Function接口的类。Function接口根据函数的参数个数决定。
+   属性引用创建一个继承自PropertyReference1Impl或者MutablePropertyReference1Impl的类。
+   对引用成员的访问是通过创建上述的类实例访问的，[C]::[成员]引用访问其创建的对象是单例的。
+
+3 集合的函数式API
+* filter函数。遍历集合并选出给定lambda返回true的那些元素。
+* map函数。遍历集合把元素转换为lambda的返回值。
+* all函数。遍历集合如果所有元素的lambda都返回true，则函数返回true否则返回false。
+* any函数。遍历集合如果存在元素lambda返回true，则函数返回true否则返回false。
+* count函数。遍历集合获取lambda返回true的元素个数。
+* find函数。遍历集合查找第一个lambda返回true的元素否则返回null。
+* groupBy函数。遍历集合根据lambda返回的值作为key值分组。
+* flatMap函数。遍历集合将每个元素转换为一个Iterator。遍历iterator合并成一个集合。
+
+4 使用java函数式接口
+* 只有一个方法的Java接口被称为函数式接口或者称为SAM接口(single abstract method)
+* kotlin允许使用lambda来调用函数式接口作为参数的方法。
+* 和java不同kotlin有完整的函数类型，所以kotlin不支持把lambda自动转换成实现kotlin接口的对象。
+* 使用SAM构造方法可以显示的将lambda转换为函数式接口。如 Runnable{}
+* 在lambda中使用this访问的是其捕获的外部类实例，如果没有外部类则无法使用this。
+
+5 lambda实现原理
+* lambda表达式被编译成继承kotlin/jvm/internal/Lambda和实现了相应Function接口的类(根据lambda参数)
+* lambda表达式可以捕获局部变量和外部类实例。被捕获的基本类型的局部变量会被替换成kotlin/jvm/internal/Ref$相应的对象。
+* 如果lambda表达式捕获了变量每次调用都会创建新的实例，如果没有会在类中创建一个静态的单例对象。
+* object表达式和SAM构造方法被编译成实现相应接口的匿名内部类。
+
+6 kotlin内置的函数
+* apply
+* also
+* with
+* run
+* let
+* apply和also返回当前对象，其它的返回lambda返回值。
+* 这些函数只能内联调用
+* 顶级函数/扩展函数，带接受者的lambda/lambda返回值类型，方法返回值类型。

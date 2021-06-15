@@ -1,0 +1,30 @@
+1 概述
+* ClassLoader负责加载classes。
+* ClassLoader通过binary name尝试加载生成class。
+* 典型的加载策略是转换name为文件名，从文件系统中读取文件。
+* 每一个Class对象包含了其定义的ClassLoader，通过getClassLoader方法访问。
+* 数组类不是由classloader加载的，是有虚拟机按需自动创建的，获取数组类的classloader将返回其元素的classloader，如果元素是原始类型将返回null。
+* classloader使用委托模式搜索类和资源。每个classloader都有一个父classloader。当加载一个class或resource时，先委托给父classloader。
+* jvm内置的classloader被称为bootstrap classloader ，它是jvm的一部分，没有父classloader。
+* classloader加载的类的构造器或者方法可能引用其他的classes。jvm使用当前类的定义类classloader调用loadClass去加载它。
+
+2 定义类加载器，初始类加载器，命名空间
+* 定义class的加载器被称为class的定义类加载器
+* 可加载class的加载器可称为class的初始类加载器
+* 所有标记为classloader的初始加载器的集合称为classloader的命名空间。子加载器共享父加载器的命名空间。
+
+3 loadClass(String name,boolean resovle)
+   name - class的binary name
+   resovle - 使用链接
+* 调用findLoadedClass(String  name)获取。其实是在classloader的命名空间中搜索。
+* 委托给父加载器或启动类加载器加载
+* 调用findClass(String name)去加载class。
+* 如果没有找到抛出ClassNotFoundException
+
+4 definClass(String name,byte[] b,int off,int len)
+   name - binary name of class
+   byte[] -class data
+   off - start offset of class data
+   len - the length of the class data 
+* 转换字节数组为jvm class运行时数据。
+* 自定义classloader应该重写findClass再调用definClass。

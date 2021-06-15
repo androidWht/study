@@ -1,0 +1,56 @@
+1 接口
+* kotlin接口可以有实现方法。
+* kotlin接口可以定义属性，子类必须重写这个属性。
+* kotlin中使用：代替extends和implements。也是单继承结构。
+* kotlin中必须使用override关键词修饰重写的方法或属性。
+* kotlin接口中如果存在具有相同签名的方法实现，子类必须重写。
+* 可以通过super<T>.语法调用具体接口的方法实现。
+* kotlin1.0是以java6为目标设计的。并不支持接口中的默认方法。
+   因此会把带默认方法的接口编译成一个接口和一个将方法体作为静态函数的类的结合体。
+   接口中只包含声明，类中包含了以静态方法存在的所有实现。
+
+2 访问修饰符
+* kotlin默认是final的。除非使用open修饰否则不能重写。
+* 被重写的方法或者属性(overiide修饰)也是open的。
+* kotlin默认是public的。
+* public 所有地方可见。internal模块可见。protected 子类中可见。private 类或文件中可见。
+* kotlin允许顶层声明使用private可见性。
+
+3 java和kotlin访问权限的区别
+* public权限都是一样的
+* kotlin有internal权限，实际是编译成public，在java类中可以绕过internal权限直接访问，
+  internal属性访问器和方法的名字会被毁坏。在其它model中java中不能通过名字直接访问internal成员，编译器也会阻止java的访问，当然通过反射还是可以访问。
+* kotlin中没有default权限。
+* java中的protected权限可以在包内访问以及在子类中访问。但是子类访问需要条件，只有通过this或者通过当前类或其子类才能访问父类的protected方法。
+* kotlin中的protected权限只能在子类中访问，没有限制。但是其也是通过java的protected权限实现的，对java类来说其就变为java中的protected。
+* kotlin中外部类可以被声明为public,inernal ,private，internal被编译成public，private会被编译成default权限。
+
+
+4 密封类：定义受限的类继承结构。
+* sealed关键词修饰类或接口。
+* sealed的子类必须和父类或接口定义在同一个包中。
+* sealed类被编译成一个abstract类，构造器被编译成private，编译器会生成相应的public构造器尾部添加一个参数
+   kotlin/jvm/internal/DefaultConstructorMarker。
+* sealed类或接口不能被java继承，编译器会阻止这样的行为。
+
+5 数据类 data class
+* data class编译器会生成equals(),hashCode(),toString()方法。
+* data class构造器必须有至少一个参数，推荐是用val值。
+* 只有在构造器里面的参数才会到相等性检查和hash算法中
+* data class会生成一个copy方法，参数为构造器中的所有属性。
+
+6 类委托
+* 使用类委托可以将一个接口的实现委托给另一个对象。避免继承导致的脆弱性和依赖。
+* 实现一个接口 ，使用by关键词加对象。可重写方法实现自定义。
+
+7 object关键字。将类的声明和对象的创建结合起来。
+* 对象声明。定义一个类并创建单例对象。 
+  对象声明只能使用无参构造器。可以通过类名字节访问对象成员。
+  实现原理：将构造器private，声明一个public的静态变量INSTANCE，并在静态代码块创建实例。
+* 伴生对象。伴生对象本质是一个嵌套类。
+  伴生对象类名默认为Companion,也可以指定。
+  编译器会在外部对象声明一个伴生类的静态变量，在外部类初始化的时候创建其实例。
+  可以在伴生对象上定义扩展函数。
+* 对象表达式。本质是一个匿名内部类。
+  与java不同的是对象表达式可以继承多个接口。
+
