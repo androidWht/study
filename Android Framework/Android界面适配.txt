@@ -1,0 +1,21 @@
+1 概念
+* px 像素，dp密度无关像素，sp缩放密度无关像素。
+* dpi 像素密度。每英寸像素点。
+* 分辨率 屏幕上总像素点。
+* 屏幕尺寸。应用的屏幕尺寸并非设备的实际屏幕尺寸，而是综合考虑屏幕方向，系统装饰和窗口配置后的尺寸。
+
+2 适配屏幕尺寸
+* 使用约束布局。
+* 避免硬编码视图尺寸，尽量使用match_parent或wrap_content。
+* 使用备用布局。
+   * 最小宽度限定符。res/layout-sw600dp
+   * 使用可用宽度限定符。res/layoyt-w600dp
+   * 使用屏幕方向限定符。res/layout-land  res/sw-600dp-land
+* 使用.9格式图。
+
+3 适配屏幕密度
+* 使用密度无关像素dp，sp。
+* 使用备用位图。drawable-mdpi  drawable-hdpi drawable-xhdpi drawable-xxhdpi
+   系统会根据屏幕dpi选择相应的位图。如果没有提供，会选择最匹配的并对其进行缩放。
+* 将应用图标放在mipmap中。
+* 使用矢量图。矢量图使用xml定义路径和颜色，缩放不会失真。

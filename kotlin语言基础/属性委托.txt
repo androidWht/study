@@ -1,0 +1,4 @@
+* 通过by关键词可以将属性委托给一个对象。
+* 属性委托是基于约定实现的，这个对象必须有两个operator方法
+  getValue(t:T,prop:KProperty<*>)获取属性时调用
+  setValue(t:T,prop:KProperty<*>,newValue:Pv)设置属性时调用

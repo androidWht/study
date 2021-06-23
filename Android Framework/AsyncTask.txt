@@ -1,0 +1,27 @@
+* 对线程池的封装，双线程池，被主线程池拒绝的任务会被加入到后备线程池执行。
+  1 主线程池 1个核心线程，最大线程20，线程超时3秒，使用SynchronousQueue列队。
+  2 后备线程池 5个核心线程，最大5个线程，线程超时3秒，使用LinkedBlockingQueue无界列队。
+* 任务被提交到SerialExexutor，再转到实际线程池执行。实现有序序列化的提交和执行。
+* 可以设置自定义的线程池，替换默认的双线程池。
+* 将任务封装成FutureTask，交于线程池执行。
+* doInBackbround(Objec... params)回调用于执行任务，在工作线程调用。
+  onPreExecute() 执行前回调
+  onPostExecutor(result) 执行成功时回调
+  onCanceled(result) 执行异常或取消时回调
+  onProgressUpdate(Progress... values) 更新进度回调
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

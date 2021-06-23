@@ -1,0 +1,31 @@
+1 Retrofit
+* retrofit是对okhttp的封装
+* 使用java动态代理，反射，注解等技术，将一个http请求封装成一个方法请求。
+* ConvertFactory。转换响应的数据类型。
+* CallAdapter。将请求转换成一个可调用对象
+* retrofit使用动态代理，建造者，单例，抽象工厂，适配器，观察者等等。
+
+
+2 Okhttp
+* 大致流程
+   1 通过OkhttpClient.Builder创建OkhttpClient，通过OkhttpClient创建Call，发起同步或异步请求。
+   2 通过Dispatcher对所有RealCall进行统一管理，并通过execute()或enqueue()方发起同步或异步请求。
+   3 最终调用ReallCall中的getResponseWithInterceptorChain()方法，从拦截器中获取返回结果。
+   4 拦截器中依次通过RetryAndFollowUpInterceptor-BridegeInterceptor-CacheInterceptor-ConnectInterceptor-CallServerInterceptor
+* 拦截器解析
+  1 RetryAndFollowUpInterceptor 负责重定向和失败重试。   
+  2 BridgeInterceptor 负责转换原始的Request和相应的Response。
+  3 CacheInterceptor 负责读取缓存以及更新缓存,实现http缓存协议。
+  4 ConnectInterceptor 负责与服务器建立连接。
+  5 CallServerInterceptor 负责发送和读取数据。
+* 拦截器顺序  应用拦截器 - 内置拦截器 - 网络拦截器 - CallServerInterceptor
+  应用拦截器处于最上层，没有进行一系列的转换处理，只会被调用一次。
+  网络拦截器位于下层，其会被调用多次，数据已经经过多次转换处理。
+
+3 StreamAllocation 
+* 管理Connection，Stream，Call三者之间的关系
+* 一个Connect代表一个socket连接，一个stream代表一个http流，一个Call代表依次http的请求。
+* http1一个connect上同时只能有一个stream，http2同时可以发起多个stream。
+
+4 设计模式
+* 建造者模式，单例模式，工厂模式，责任链模式，观察者模式，策略模式
